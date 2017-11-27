@@ -30,10 +30,10 @@ class TechnologydetailsSpider(RedisSpider):
         item = TechnologyDetailsItem()
         item["title"] = response.xpath('//h1[@class="title"]/text()').extract()[0]
         item["publish_time"] = response.xpath('//span[@class="publish-time"]/text()').extract()[0].split("*")[0]
-        item["wordage"] = re.sub("\D", "",response.xpath('//span[@class="wordage"]/text()').extract()[0])
-        item["views_count"] = re.sub("\D", "",response.xpath('//span[@class="views-count"]/text()').extract()[0])
-        item["comments_count"] = re.sub("\D", "",response.xpath('//span[@class="comments-count"]/text()').extract()[0])
-        item["likes_count"] = re.sub("\D", "",response.xpath('//span[@class="likes-count"]/text()').extract()[0])
+        item["wordage"] = "0" if len(response.xpath('//span[@class="wordage"]/text()').extract()) <= 0 else re.sub("\D", "",response.xpath('//span[@class="wordage"]/text()').extract()[0])
+        item["views_count"] = "0" if len(response.xpath('//span[@class="views-count"]/text()').extract()) <= 0 else re.sub("\D", "", response.xpath('//span[@class="views-count"]/text()').extract()[0])
+        item["comments_count"] = "0" if len(response.xpath('//span[@class="comments-count"]/text()').extract()) <= 0 else re.sub("\D", "", response.xpath('//span[@class="comments-count"]/text()').extract()[0])
+        item["likes_count"] = "0" if len(response.xpath('//span[@class="likes-count"]/text()').extract()) <= 0 else re.sub("\D", "", response.xpath('//span[@class="likes-count"]/text()').extract()[0])
         # item["content"] = remove_tags(response.xpath('//div[@class="show-content"]').extract()[0])
         item["content"] = response.text
         item["url"] = response.url
