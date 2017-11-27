@@ -7,6 +7,7 @@
 from twisted.enterprise import adbapi
 import pymysql
 import pymysql.cursors
+import copy
 
 class TechnologyarticlePipeline(object):
     def process_item(self, item, spider):
@@ -33,7 +34,8 @@ class MysqlTwistedPipline(object):
 
     def process_item(self, item, spider):
         #使用twisted将mysql插入变成异步执行
-        query = self.dbpool.runInteraction(self.do_insert, item)
+        asynItem = copy.deepcopy(item)
+        query = self.dbpool.runInteraction(self.do_insert, asynItem)
         query.addErrback(self.handle_error, item, spider) #处理异常
 
     def handle_error(self, failure, item, spider):

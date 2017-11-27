@@ -5,12 +5,13 @@ from selenium import webdriver
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
 from TechnologyArticle.items import TechnologyDetailsItem
+from w3lib.html import remove_tags
 
-class TechnologydetailsSpider(scrapy.Spider):
+class TechnologydetailsSpider(RedisSpider):
     name = 'technologydetails'
     # allowed_domains = ['www.baidu.com']
-    start_urls = ['http://www.jianshu.com/p/8abb412a0000']
-    # redis_key = "technologydetails:start_urls"
+    # start_urls = ['http://www.jianshu.com/p/8abb412a0000']
+    redis_key = "technologydetails:start_urls"
 
     def __init__(self):
         self.browser = webdriver.Chrome(executable_path="E:\python\Scripts\chromedriver.exe")
@@ -31,4 +32,8 @@ class TechnologydetailsSpider(scrapy.Spider):
         item["views_count"] = response.xpath('//span[@class="views-count"]/text()').extract()[0].split(" ")[1]
         item["comments_count"] = response.xpath('//span[@class="comments-count"]/text()').extract()[0].split(" ")[1]
         item["likes_count"] = response.xpath('//span[@class="likes-count"]/text()').extract()[0].split(" ")[1]
-        item["content"] = response.xpath('//div[@class="show-content"]').extract()[0]
+        # item["content"] = remove_tags(response.xpath('//div[@class="show-content"]').extract()[0])
+        item["content"] = response.text
+        item["url"] = response.url
+        print(item["content"])
+        yield item

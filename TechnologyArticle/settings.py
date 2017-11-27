@@ -99,4 +99,4 @@ MYSQL_DBNAME = 'xici'
 MYSQL_USER = 'root'
 MYSQL_PASSWD = 'root'
 
-SQL_DATETIME_FORMAT = "%Y-%m-%d %H:%M"
+SQL_DATETIME_FORMAT = "%Y.%m.%d %H:%M"

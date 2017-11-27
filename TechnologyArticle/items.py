@@ -12,8 +12,6 @@ from TechnologyArticle.settings import SQL_DATETIME_FORMAT
 
 
 class TechnologyarticleItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
     url = scrapy.Field()
 
     def get_insert_sql(self):
@@ -46,17 +44,35 @@ class TechnologyDetailsItem(scrapy.Item):
     comments_count = scrapy.Field()
     likes_count = scrapy.Field()
     content = scrapy.Field()
+    url = scrapy.Field()
     def get_insert_sql(self):
         #插入知乎question表的sql语句
+        print(type(self["title"]))
+        print(type(self["wordage"]))
+        print(type(self["views_count"]))
+        print(type(self["comments_count"]))
+        print(type(self["likes_count"]))
+        print(type(self["content"]))
+        print(type(self["url"]))
+
+        create_time = datetime.datetime.strptime(self["publish_time"],SQL_DATETIME_FORMAT)
+        print(type(create_time))
+
+        # insert_sql = """
+        #     insert into technology_info(title, publish_time, wordage, views_count, comments_count, likes_count, content,url
+        #       ) VALUES (%s, %s, %s, %s, %s, %s, %s,%s)ON DUPLICATE KEY UPDATE wordage=VALUES(wordage),views_count=VALUES(views_count)
+        #       ,likes_count=VALUES(likes_count),comments_count=VALUES(comments_count)
+        # """
         insert_sql = """
-            insert into zhihu_answer(title, publish_time, wordage, views_count, comments_count, likes_count, content
-              ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+            insert into technology_info(title, publish_time, wordage, views_count, comments_count, likes_count, content,url
+              ) VALUES (%s, %s, %s, %s, %s, %s, %s,%s)ON DUPLICATE KEY UPDATE wordage=VALUES(wordage),views_count=VALUES(views_count)
+              ,likes_count=VALUES(likes_count),comments_count=VALUES(comments_count)
         """
-        create_time = datetime.datetime.fromtimestamp(self["publish_time"]).strftime(SQL_DATETIME_FORMAT)
         params = (
             self["title"], create_time, self["wordage"],
             self["views_count"], self["comments_count"], self["likes_count"],
-            self["content"]
+            self["content"], self["url"]
         )
+
         return insert_sql, params
 
