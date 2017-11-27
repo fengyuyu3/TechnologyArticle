@@ -6,6 +6,7 @@
 # http://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+import time
 
 
 class TechnologyarticleSpiderMiddleware(object):
@@ -62,10 +63,15 @@ class JSPageMiddleware(object):
 
     #通过chrome请求动态网页
     def process_request(self, request, spider):
-        if spider.name == "technologydetails":
             # browser = webdriver.Chrome(executable_path="D:/Temp/chromedriver.exe")
-            spider.browser.get(request.url)
+        spider.browser.get(request.url)
             # import time
             # time.sleep(3)
+        if spider.name =="technology":
+            spider.browser.get(request.url)
+            for i in range(50):
+                spider.browser.execute_script(
+                    "window.scrollTo(0, document.body.scrollHeight); var lenOfPage=document.body.scrollHeight; return lenOfPage;")
+                time.sleep(0.1)
             print("访问:{0}".format(request.url))
-            return HtmlResponse(url=spider.browser.current_url, body=spider.browser.page_source, encoding="utf-8", request=request)
+            return HtmlResponse(url=spider.browser.current_url, body=spider.browser.page_source, encoding="utf-8",request=request)

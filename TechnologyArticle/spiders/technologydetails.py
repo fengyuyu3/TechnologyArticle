@@ -6,6 +6,8 @@ from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
 from TechnologyArticle.items import TechnologyDetailsItem
 from w3lib.html import remove_tags
+import time
+import re
 
 class TechnologydetailsSpider(RedisSpider):
     name = 'technologydetails'
@@ -14,7 +16,7 @@ class TechnologydetailsSpider(RedisSpider):
     redis_key = "technologydetails:start_urls"
 
     def __init__(self):
-        self.browser = webdriver.Chrome(executable_path="E:\python\Scripts\chromedriver.exe")
+        self.browser = webdriver.Chrome(executable_path="G:\python-3.6.3\Scripts\chromedriver.exe")
         # self.browser = webdriver.PhantomJS(executable_path="E:\python\Scripts\phantomjs.exe")
         super(TechnologydetailsSpider, self).__init__()
         dispatcher.connect(self.spider_closed, signals.spider_closed)
@@ -28,12 +30,17 @@ class TechnologydetailsSpider(RedisSpider):
         item = TechnologyDetailsItem()
         item["title"] = response.xpath('//h1[@class="title"]/text()').extract()[0]
         item["publish_time"] = response.xpath('//span[@class="publish-time"]/text()').extract()[0].split("*")[0]
-        item["wordage"] = response.xpath('//span[@class="wordage"]/text()').extract()[0].split(" ")[1]
-        item["views_count"] = response.xpath('//span[@class="views-count"]/text()').extract()[0].split(" ")[1]
-        item["comments_count"] = response.xpath('//span[@class="comments-count"]/text()').extract()[0].split(" ")[1]
-        item["likes_count"] = response.xpath('//span[@class="likes-count"]/text()').extract()[0].split(" ")[1]
+        item["wordage"] = re.sub("\D", "",response.xpath('//span[@class="wordage"]/text()').extract()[0])
+        item["views_count"] = re.sub("\D", "",response.xpath('//span[@class="views-count"]/text()').extract()[0])
+        item["comments_count"] = re.sub("\D", "",response.xpath('//span[@class="comments-count"]/text()').extract()[0])
+        item["likes_count"] = re.sub("\D", "",response.xpath('//span[@class="likes-count"]/text()').extract()[0])
         # item["content"] = remove_tags(response.xpath('//div[@class="show-content"]').extract()[0])
         item["content"] = response.text
         item["url"] = response.url
         print(item["content"])
         yield item
+
+    def getNum(self,str):
+        c = re.compile("/+d")
+        s = re.match(str,c)
+        return s

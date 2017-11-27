@@ -57,7 +57,7 @@ ROBOTSTXT_OBEY = False
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
    # 'TechnologyArticle.middlewares.MyCustomDownloaderMiddleware': 543,
-    "TechnologyArticle.middlewares.JSPageMiddleware":1
+    "TechnologyArticle.middlewares.JSPageMiddleware":100
 }
 
 # Enable or disable extensions
